@@ -92,7 +92,7 @@ Troubleshooting
 **Roadmap**
 
 **Some example outputs** 
--Image to video 
+
 <img width="1024" height="1024" alt="male_indian" src="https://github.com/user-attachments/assets/0e0211c9-1dfe-470f-8eef-68e31b382e6e" />
 -Text to Sketch
 
@@ -103,6 +103,7 @@ Troubleshooting
 <img width="1024" height="1024" alt="generated_moodboard" src="https://github.com/user-attachments/assets/e42f7ada-9a49-4a54-bfc1-f77ae6dea3eb" />
 
 -Image to mood board
+
 
 
 
