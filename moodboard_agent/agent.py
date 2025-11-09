@@ -3,7 +3,9 @@ from io import BytesIO
 from PIL import Image
 from google import genai
 from google.adk.agents import LlmAgent
-
+from google.adk.tools import ToolContext
+import io
+from google.genai import types
 TEXT_MODEL_ID = "gemini-2.5-flash"
 IMAGE_MODEL_ID = "gemini-2.5-flash-image"
 
@@ -28,43 +30,73 @@ def _image_from_response(response) -> Image.Image:
             return as_img()
     raise ValueError("No image found in the tool's response.")
 
-def create_fashion_moodboard(
-    input_prompt: str,
-    input_image_path: str,
-    output_path: str = "output/moodboard/generated_moodboard.png",   # optional now
-) -> str:
+async def create_fashion_moodboard(
+    tool_context: ToolContext,
+    prompt: str = "",
+    input_image_path: str = "",   # optional now
+) :
     """
     Generates a fashion moodboard image and, if return_inline=True,
     returns a Markdown snippet that displays it directly in the ADK web UI.
     Optionally also saves to `output_path` if provided.
     """
-    print(f"input_prompt: {input_prompt}, input_image_path: {input_image_path}, output_path: {output_path}")
+
+    output_path: str = "output/moodboard/generated_moodboard.png"
+    # print(f"input_prompt: {prompt}, input_image_path: {input_image_path}, output_path: {output_path}")
     try:
         api_key = os.getenv("GEMINI_API_KEY")
-        if not api_key:
-            return "Error: GOOGLE_API_KEY not found in environment."
+        # if not api_key:
+        #     return "Error: GOOGLE_API_KEY not found in environment."
 
-        if not os.path.exists(input_image_path):
-            return f"Error: Image not found at {input_image_path}"
+        # if not os.path.exists(input_image_path):
+        #     return f"Error: Image not found at {input_image_path}"
 
         client = genai.Client(api_key=api_key)
 
-        rephrased_prompt = rephrase_prompt(input_prompt)
+        # rephrased_prompt = rephrase_prompt(input_prompt)
+        image = Image.open(input_image_path)
+        prompt = prompt
         response = client.models.generate_content(
-            model=IMAGE_MODEL_ID,
-            contents=[input_prompt, Image.open(input_image_path)]
+            model="gemini-2.5-flash-image",
+            contents=[prompt, image],
         )
-        img = _image_from_response(response)
+        # img = _image_from_response(response)
+        for part in response.parts:
+            print("Saving moodboard image......")
+            print(part)
+            if part.inline_data is not None:
+                print("Saving moodboard image......")
+                result_image = part.as_image()
+                result_image.save(output_path)
+                image = Image.open(output_path)
+                image_bytes_io = io.BytesIO()
+                image.save(image_bytes_io, format="PNG")
+                image_bytes = image_bytes_io.getvalue()
+                image_artifact = types.Part.from_bytes(data=image_bytes, mime_type='image/png')
+                filename = "moodboard.png"
+                await tool_context.save_artifact(filename, image_artifact)
 
+                return {
+                    "output_path": output_path,
+                    "message": f"Generated image saved to {output_path}"
+                }
         # 3) Optional: save to disk
-        saved_note = ""
-        if output_path:
-            os.makedirs(os.path.dirname(output_path) or ".", exist_ok=True)
-            img.save(output_path)
-            saved_note = f"\n\nSaved to: `{os.path.abspath(output_path)}`"
+        # saved_note = ""
+        # if output_path:
+        #     os.makedirs(os.path.dirname(output_path) or ".", exist_ok=True)
+        #     img.save(output_path)
+        #     saved_note = f"\n\nSaved to: `{os.path.abspath(output_path)}`"
 
+        # if tool_context:
+        #     image = Image.open(output_path)
+        #     image_bytes_io = io.BytesIO()
+        #     image.save(image_bytes_io, format="PNG")
+        #     image_bytes = image_bytes_io.getvalue()
+        #     image_artifact = types.Part.from_bytes(data=image_bytes, mime_type='image/png')
+        #     filename = "moodboard.png"
+        #     await tool_context.save_artifact(filename, image_artifact)
         # fallback text if not returning inline
-        return f"Moodboard created successfully.{saved_note}"
+        # return f"Moodboard created successfully.{saved_note}"
 
     except Exception as e:
         print(f"--- TOOL: EXECUTION FAILED: {e} ---")
@@ -77,8 +109,6 @@ root_agent = LlmAgent(
     instruction=(
         "You are a helpful fashion design assistant. "
         "You create moodboards when asked. "
-        "When a user requests a moodboard, use the create_fashion_moodboard tool "
-        "with the appropriate parameters. "
         "You always generate model full dress based on sketch. It should always have face."
     ),
     tools=[create_fashion_moodboard]

@@ -12,7 +12,7 @@ from PIL import Image
 import io
 # Load environment variables
 load_dotenv()
-MODEL = "veo-2.0-generate-001"
+MODEL = "veo-3.0-fast-generate-001"
 
 client = genai.Client(
     http_options={"api_version": "v1beta"},
@@ -28,7 +28,7 @@ video_config = types.GenerateVideosConfig(
 )
 
 def generate():
-    image_path = "output/sketch-to-digital/generated_image2.png"
+    image_path = "output/sketch-to-digital/pearl_white_latina_wedding_dress.png"
     img = Image.open(image_path)
     img_byte_arr = io.BytesIO()
     img.save(img_byte_arr, format="PNG")
@@ -62,7 +62,7 @@ def generate():
     for n, generated_video in enumerate(generated_videos):
         print(f"Video has been generated: {generated_video.video.uri}")
         client.files.download(file=generated_video.video)
-        generated_video.video.save(f"video_{n}.mp4") # Saves the video(s)
+        generated_video.video.save(f"video2_{n}.mp4") # Saves the video(s)
         print(f"Video {generated_video.video.uri} has been downloaded to video_{n}.mp4.")
 
 if __name__ == "__main__":

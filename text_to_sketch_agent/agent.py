@@ -2,13 +2,15 @@ from google import genai
 from google.genai import types
 from google.adk.agents import Agent
 from PIL import Image
+import io
 import os
 from dotenv import load_dotenv
-
+from google.adk.tools import ToolContext
 # Load environment variables
 load_dotenv()
 
-def text_to_sketch(
+async def text_to_sketch(
+    tool_context: ToolContext,
     prompt: str = "A simple black and white pencil sketch of a fashion dress design",
     output_path: str = "output/text-to-sketch/dress_sketch.png",
 ):
@@ -41,16 +43,26 @@ def text_to_sketch(
         contents=[refined_prompt],
     )
 
-    # Extract image result
-    for part in response.parts:
-        if part.inline_data is not None:
-            result_image = part.as_image()
-            os.makedirs(os.path.dirname(output_path), exist_ok=True)
-            result_image.save(output_path)
-            return {
-                "output_path": output_path,
-                "message": f"Generated sketch saved to {output_path}",
-            }
+    if tool_context:
+        # Extract image result
+        for part in response.parts:
+            if part.inline_data is not None:
+                result_image = part.as_image()
+                os.makedirs(os.path.dirname(output_path), exist_ok=True)
+                result_image.save(output_path)
+
+                image = Image.open(output_path)
+                image_bytes_io = io.BytesIO()
+                image.save(image_bytes_io, format="PNG")
+                image_bytes = image_bytes_io.getvalue()
+                image_artifact = types.Part.from_bytes(data=image_bytes, mime_type='image/png')
+                filename = "t2s.png"
+                await tool_context.save_artifact(filename, image_artifact)
+
+                return {
+                    "output_path": output_path,
+                    "message": f"Generated sketch saved to {output_path}",
+                }
 
     return {"message": "No image data returned by the model."}
 

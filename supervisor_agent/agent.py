@@ -10,10 +10,12 @@ from google.adk.agents import LlmAgent, BaseAgent
 from moodboard_agent import get_mootboard_agent
 from text_to_sketch_agent import get_text_to_sketch_agent
 from sketch_to_digital_agent import get_sketch_to_digital_agent
+from image_to_video import get_image_to_video_agent
 
 # Define individual agents
 sketch_to_digital_agent = get_sketch_to_digital_agent()
 text_to_sketch_agent = get_text_to_sketch_agent()
+image_to_video_agent = get_image_to_video_agent()
 # face_swap_agent = LlmAgent(name="FaceSwapper", model="gemini-2.0-flash")
 mootboard_agent = get_mootboard_agent()
 
@@ -31,6 +33,7 @@ root_agent = LlmAgent(
         sketch_to_digital_agent,
         text_to_sketch_agent,
         mootboard_agent,
+        image_to_video_agent
     ],
 )
 
