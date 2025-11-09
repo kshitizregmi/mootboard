@@ -1,11 +1,17 @@
-**Moodboard (Google ADK Multi‑Agent Fashion Studio)**
+**From Sketch to Runway with Fashion Moodboard Multimodel Agent**
 
-Transform plain‑English fashion ideas into polished moodboards using a coordinated set of Google ADK agents. The pipeline moves from text → sketch → digital illustration → curated moodboard, with a supervisor agent orchestrating each stage.
+
+https://github.com/user-attachments/assets/7817b08a-f4a4-4099-9624-023763322492
+
+
+
+Transform plain‑English fashion ideas into polished moodboards using a coordinated set of Google ADK multimodel agents. The pipeline moves from text → sketch → digital illustration → curated moodboard, and finally to Runway with a supervisor agent orchestrating each agent. 
 
 **Highlights**
 - Text → Sketch: Generates black‑and‑white concept sketches from descriptions.
 - Sketch → Digital: Produces colorful digital illustrations from sketches.
 - Moodboard Builder: Curates final boards from generated visuals and references.
+- Runway Modeling: Takes the model in mootboard or sketch and converts that into video where model 
 - Multi‑Agent Orchestration: Supervisor coordinates specialized agents end‑to‑end.
 
 **Architecture**
@@ -102,5 +108,6 @@ https://github.com/user-attachments/assets/7817b08a-f4a4-4099-9624-023763322492
 <img width="1024" height="1024" alt="generated_moodboard" src="https://github.com/user-attachments/assets/e42f7ada-9a49-4a54-bfc1-f77ae6dea3eb" />
 
 -Image to mood board
+
 
 
