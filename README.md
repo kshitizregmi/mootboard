@@ -83,20 +83,15 @@ Outputs are written to `output/` with stage subfolders (e.g., `text-to-sketch/`,
 - For better results, include silhouette, fabric types, era/inspiration, and target vibe.
 - Use the supervisor to chain stages, or run agents individually for iteration.
 
-**Troubleshooting**
-- Missing key: Ensure `.env` has `GEMINI_API_KEY` and your shell session is loading it.
-- Model errors: Verify model names supported by your `google-generativeai` release.
-- Image I/O: Confirm input paths exist and you have read/write permissions in `output/`.
+Troubleshooting
+
+* Veo 3 inconsistencies: May hallucinate or mix attire/styles across frames (e.g., a kimono on European-style features or mismatched garments).
+* Docs navigation: Google SDK documentation can be hard to navigate.
+* Artifacts & caching: Storing and caching agent outputs via callbacks needs refinement.
 
 **Roadmap**
-- Batch processing and job queueing for larger briefs.
-- Optional web frontend (file uploads, previews, and voice prompts) wired to the agents.
-- Fine‑tuned prompt templates per category (streetwear, couture, athleisure, etc.).
 
 **Some example outputs** 
-
-https://github.com/user-attachments/assets/7817b08a-f4a4-4099-9624-023763322492
-
 -Image to video 
 <img width="1024" height="1024" alt="male_indian" src="https://github.com/user-attachments/assets/0e0211c9-1dfe-470f-8eef-68e31b382e6e" />
 -Text to Sketch
@@ -108,6 +103,7 @@ https://github.com/user-attachments/assets/7817b08a-f4a4-4099-9624-023763322492
 <img width="1024" height="1024" alt="generated_moodboard" src="https://github.com/user-attachments/assets/e42f7ada-9a49-4a54-bfc1-f77ae6dea3eb" />
 
 -Image to mood board
+
 
 
 
