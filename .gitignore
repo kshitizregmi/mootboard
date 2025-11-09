@@ -1,0 +1,10 @@
+.venv
+venv
+.env
+.python-version
+uv.lock
+face_swap_agent/
+main.py
+mootboard.py
+test.py
+output/
